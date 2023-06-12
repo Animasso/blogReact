@@ -1,7 +1,8 @@
 import "./App.css";
-import { Navbar } from "./components";
+import { Footer, Navbar } from "./components";
 import { Routes, Route } from "react-router-dom";
 import { Home, Register, Login, Error, CreatePost } from "./pages";
+import { ProtectedRoutes } from "./ProtectedRoutes";
 function App() {
   // const location = useLocation();
 
@@ -13,9 +14,19 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/newPost" element={<CreatePost />} />
+
+        <Route
+          path="/newPost"
+          element={
+            <ProtectedRoutes>
+              <CreatePost />
+            </ProtectedRoutes>
+          }
+        />
+
         <Route path="*" element={<Error />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

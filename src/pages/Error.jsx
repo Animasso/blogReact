@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import errorImg from "../assets/error.webp";
+import { useTitle } from "../hooks/useTitle";
 export const Error = () => {
+  useTitle("Error Page");
   return (
     <section className="bg-white dark:bg-gray-900 ">
       <div className="container min-h-screen px-6 py-12 mx-auto lg:flex lg:items-center lg:gap-12">
