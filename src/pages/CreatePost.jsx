@@ -1,11 +1,12 @@
 import React from "react";
 import { useTitle } from "../hooks/useTitle";
-
+import { useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../firebase/config";
 export const CreatePost = () => {
   useTitle("Create your Post");
   const postRef = collection(db, "post");
+  const navigate = useNavigate();
   async function handleSubmit(e) {
     e.preventDefault();
     const document = {
@@ -17,6 +18,7 @@ export const CreatePost = () => {
       },
     };
     await addDoc(postRef, document);
+    navigate("/");
   }
   return (
     <main className="mt-8 max-w-screen-xl flex flex-wrap items-center flex-col mx-auto p-4">
