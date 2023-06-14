@@ -18,7 +18,7 @@ export const CreatePost = () => {
       },
     };
     await addDoc(postRef, document);
-    navigate("/home");
+    navigate("/dashbord");
   }
   return (
     <main className="mt-8 max-w-screen-xl flex flex-wrap items-center flex-col mx-auto p-4">
