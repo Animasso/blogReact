@@ -2,7 +2,13 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        lobster: ["Lobster", "cursive"],
+        courgette: ["Courgette", "cursive"],
+      },
+    },
   },
   plugins: [],
 };
+// font-family: 'Lobster', cursive;

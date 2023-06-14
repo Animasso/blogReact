@@ -5,20 +5,20 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo192.png";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, provider } from "../firebase/config";
-export const Navbar = () => {
+export const Navbar = ({ children }) => {
   const navigate = useNavigate();
   const [nav, setNav] = useState(false);
   const [isAuth, setIsAuth] = useState(
     JSON.parse(localStorage.getItem("isAuth")) || false
   );
   // const isAuth = false;
-  const handleLogin = () => {
-    signInWithPopup(auth, provider).then((result) => {
-      console.log("result:", result);
-      setIsAuth(true);
-      localStorage.setItem("isAuth", true);
-    });
-  };
+  // const handleLogin = () => {
+  //   signInWithPopup(auth, provider).then((result) => {
+  //     console.log("result:", result);
+  //     setIsAuth(true);
+  //     localStorage.setItem("isAuth", true);
+  //   });
+  // };
   const handleLogout = () => {
     signOut(auth);
     setIsAuth(false);
@@ -88,7 +88,7 @@ export const Navbar = () => {
               ) : (
                 <li>
                   <button
-                    onClick={handleLogin}
+                    // onClick={handleLogin}
                     className="auth block text-white bg-blue-800 rounded  md:border-0  md:p-2 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   >
                     Login<i className="bi bi-google ml-1 text-white "></i>
@@ -113,7 +113,7 @@ export const Navbar = () => {
         >
           <div>
             <div className="flex w-full items-center justify-between mb-10">
-              <h1 className=" font-semibold text-xl"> My blog</h1>
+              <h1 className=" font-semibold text-xl"> My blog Note</h1>
               <div
                 onClick={() => setNav(!nav)}
                 className=" rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer"
@@ -124,7 +124,7 @@ export const Navbar = () => {
             </div>
             <div className=" border-b border-gray-500 my-4">
               <p className=" w-[85%] md:[90%] py-4 font-semibold">
-                Welcome To My Blog{" "}
+                Welcome To your Blog{" "}
               </p>
             </div>
           </div>

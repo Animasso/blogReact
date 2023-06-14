@@ -18,7 +18,7 @@ export const Home = () => {
     getPost();
   }, [postRef, toggle]);
   return (
-    <main className=" mt-8 max-w-screen-xl flex flex-wrap  flex-col mx-auto p-4">
+    <main className=" h-auto mt-8 max-w-screen-xl flex flex-wrap  flex-col mx-auto p-4">
       {post.map((post, index) =>
         post ? (
           <NoteCard
