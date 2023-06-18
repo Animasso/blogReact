@@ -139,6 +139,7 @@ export const FrontPage = () => {
                         id="exampleFormControlInput2"
                         name="name"
                         value={displayName}
+                        autoComplete="off"
                         onChange={(e) => setDisplayName(e.target.value)}
                       />
                       <label
@@ -255,6 +256,7 @@ export const FrontPage = () => {
                         id="exampleFormControlInput2"
                         placeholder="Email address"
                         name="email"
+                        autoComplete="off"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         // ref={emailRef}
@@ -275,6 +277,7 @@ export const FrontPage = () => {
                         placeholder="Password"
                         name="password"
                         value={password}
+                        autoComplete="off"
                         onChange={(e) => setPassword(e.target.value)}
                         // ref={passwordRef}
                       />
