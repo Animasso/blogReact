@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo192.png";
-import { signInWithPopup, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth, provider } from "../firebase/config";
 export const Navbar = ({ children }) => {
   const navigate = useNavigate();
@@ -11,17 +11,11 @@ export const Navbar = ({ children }) => {
   const [isAuth, setIsAuth] = useState(
     JSON.parse(localStorage.getItem("isAuth")) || false
   );
-  // const isAuth = false;
-  // const handleLogin = () => {
-  //   signInWithPopup(auth, provider).then((result) => {
-  //     console.log("result:", result);
-  //     setIsAuth(true);
-  //     localStorage.setItem("isAuth", true);
-  //   });
-  // };
+
   const handleLogout = () => {
     signOut(auth);
     setIsAuth(false);
+    setNav(!nav);
     localStorage.setItem("isAuth", false);
     navigate("/");
   };
@@ -131,20 +125,28 @@ export const Navbar = ({ children }) => {
           </div>
           <div>
             <ul className=" py-4 flex flex-col font-semibold">
-              <Link href="/">
+              <Link to="/dashboard">
                 <li
                   onClick={() => setNav(!nav)}
                   className="py-4 text-sm uppercase hover:text-base ease-in-out duration-500"
                 >
-                  Register
+                  Home
                 </li>
               </Link>
-              <Link href="/#about">
+              <Link to="/newPost">
                 <li
                   onClick={() => setNav(!nav)}
                   className="py-4  text-sm uppercase hover:text-base ease-in-out duration-500"
                 >
-                  Login
+                  Create your post
+                </li>
+              </Link>
+              <Link to="/">
+                <li
+                  onClick={handleLogout}
+                  className="py-4  text-sm uppercase hover:text-base ease-in-out duration-500"
+                >
+                  Logout
                 </li>
               </Link>
             </ul>
