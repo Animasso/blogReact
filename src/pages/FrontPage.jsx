@@ -1,40 +1,102 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
-import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
-import { auth, provider } from "../firebase/config";
+import { auth, provider, db } from "../firebase/config";
+
 export const FrontPage = () => {
   const [register, setRegister] = useState(false);
   const [isAuth, setIsAuth] = useState(
     JSON.parse(localStorage.getItem("isAuth")) || false
   );
-  const emailRef = useRef();
-  const passwordRef = useRef();
+
   const navigate = useNavigate();
   const handleLogin = () => {
-    signInWithPopup(auth, provider).then((result) => {
-      console.log("result:", result);
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // Connexion réussie avec Google
+        const user = result.user;
+        console.log("user:", user);
+        const db = getFirestore();
+        const usersCollection = collection(db, "users");
+        const userData = {
+          displayName: user.displayName,
+          email: user.email,
+          id: user.uid,
+        };
+        addDoc(usersCollection, userData);
+        setIsAuth(true);
+        localStorage.setItem("isAuth", true);
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        // Gestion des erreurs
+        console.log(error);
+        // Affichez ou traitez l'erreur selon vos besoins
+      });
+  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+
+  const handleRegularLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Créer un nouvel utilisateur avec l'adresse e-mail et le mot de passe
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      console.log("user:", user);
+
+      await updateProfile(user, { displayName });
+
+      // Enregistrer le nom d'utilisateur dans la base de données Firestore
+      await addDoc(collection(db, "users"), {
+        id: user.uid,
+        email: user.email,
+        displayName,
+      });
+
+      console.log("Utilisateur créé avec succès !");
+      // Réinitialiser les champs de formulaire
+      setEmail("");
+      setPassword("");
+      setDisplayName("");
       setIsAuth(true);
       localStorage.setItem("isAuth", true);
       navigate("/dashboard");
-    });
+    } catch (error) {
+      console.error("Erreur lors de la création de l'utilisateur:", error);
+    }
   };
-  const handleRegularLogin = (e) => {
+  const loginWithEmailPassword = async (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(
-      auth,
-      emailRef.current.value,
-      passwordRef.current.value
-    )
-      .then((credentials) => {
-        console.log("credentials:", credentials);
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
-    setIsAuth(true);
-    localStorage.setItem("isAuth", true);
-    navigate("/dashboard");
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      console.log("Utilisateur connecté avec succès !", user);
+      setEmail("");
+      setPassword("");
+      setIsAuth(true);
+      localStorage.setItem("isAuth", true);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Erreur lors de la connexion de l'utilisateur:", error);
+    }
   };
   return (
     <div>
@@ -75,9 +137,9 @@ export const FrontPage = () => {
                         type="text"
                         className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                         id="exampleFormControlInput2"
-                        placeholder="Email address"
                         name="name"
-                        ref={emailRef}
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
                       />
                       <label
                         htmlFor="exampleFormControlInput2"
@@ -93,8 +155,10 @@ export const FrontPage = () => {
                         className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                         id="exampleFormControlInput2"
                         placeholder="Email address"
+                        autoComplete="off"
                         name="email"
-                        ref={emailRef}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                       <label
                         htmlFor="exampleFormControlInput2"
@@ -111,7 +175,9 @@ export const FrontPage = () => {
                         id="exampleFormControlInput22"
                         placeholder="Password"
                         name="password"
-                        ref={passwordRef}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="off"
                       />
                       <label
                         htmlFor="exampleFormControlInput22"
@@ -123,7 +189,7 @@ export const FrontPage = () => {
                     {/* //login */}
                     <div className="text-center lg:text-left">
                       <button
-                        type="button"
+                        type="submit"
                         className="inline-block text-black rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                         data-te-ripple-init
                         data-te-ripple-color="light"
@@ -144,7 +210,7 @@ export const FrontPage = () => {
                 </>
               ) : (
                 <>
-                  <form onSubmit={handleRegularLogin}>
+                  <form onSubmit={loginWithEmailPassword}>
                     {/* //sign in */}
                     <div className="flex flex-row items-center justify-center lg:justify-start">
                       <p className="mb-0 mr-4 text-lg">Sign in with</p>
@@ -189,7 +255,9 @@ export const FrontPage = () => {
                         id="exampleFormControlInput2"
                         placeholder="Email address"
                         name="email"
-                        ref={emailRef}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        // ref={emailRef}
                       />
                       <label
                         htmlFor="exampleFormControlInput2"
@@ -206,7 +274,9 @@ export const FrontPage = () => {
                         id="exampleFormControlInput22"
                         placeholder="Password"
                         name="password"
-                        ref={passwordRef}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        // ref={passwordRef}
                       />
                       <label
                         htmlFor="exampleFormControlInput22"
@@ -218,7 +288,7 @@ export const FrontPage = () => {
                     {/* //login */}
                     <div className="text-center lg:text-left">
                       <button
-                        type="button"
+                        type="submit"
                         className="inline-block text-black rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                         data-te-ripple-init
                         data-te-ripple-color="light"

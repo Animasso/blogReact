@@ -1,5 +1,6 @@
 import React from "react";
 import { useTitle } from "../hooks/useTitle";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../firebase/config";
@@ -7,19 +8,50 @@ export const CreatePost = () => {
   useTitle("Create your Post");
   const postRef = collection(db, "post");
   const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState(null);
+
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       setDisplayName(user.displayName);
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
   async function handleSubmit(e) {
     e.preventDefault();
-    const document = {
-      title: e.target.title.value,
-      description: e.target.message.value,
-      author: {
+    const user = auth.currentUser;
+    console.log("user:", user);
+    if (user) {
+      const document = {
+        title: e.target.title.value,
+        description: e.target.message.value,
+        author: {
+          name: auth.currentUser.displayName,
+          id: auth.currentUser.uid,
+        },
         name: auth.currentUser.displayName,
-        id: auth.currentUser.uid,
-      },
-    };
-    await addDoc(postRef, document);
-    navigate("/dashbord");
+      };
+      console.log("document:", document);
+      await addDoc(postRef, document);
+      navigate("/dashboard");
+    }
   }
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+  //   const document = {
+  //     title: e.target.title.value,
+  //     description: e.target.message.value,
+  //     author: {
+  //       name: auth.currentUser.displayName,
+  //       id: auth.currentUser.uid,
+  //     },
+  //   };
+  //   console.log("document:", document);
+  //   await addDoc(postRef, document);
+  //   navigate("/dashboard");
+  // }
   return (
     <main className="mt-8 max-w-screen-xl flex flex-wrap items-center flex-col mx-auto p-4">
       <h1 className=" text-3xl font-bold"> Add New Post </h1>
