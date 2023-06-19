@@ -12,7 +12,6 @@ export const CreatePost = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const user = auth.currentUser;
-    console.log("user:", user);
     if (user) {
       const document = {
         title: e.target.title.value,
@@ -23,7 +22,7 @@ export const CreatePost = () => {
         },
         name: auth.currentUser.displayName,
       };
-      console.log("document:", document);
+
       await addDoc(postRef, document);
       navigate("/dashboard");
     }
@@ -45,7 +44,7 @@ export const CreatePost = () => {
   return (
     <main className="mt-8 max-w-screen-xl flex flex-wrap items-center flex-col mx-auto p-4">
       <h1 className=" text-3xl font-bold"> Add New Post </h1>
-      <form className="w-[500px]" onSubmit={handleSubmit}>
+      <form className="w-[300px] sm:w-[500px]" onSubmit={handleSubmit}>
         <input
           className=" my-4 w-full border p-2"
           type="text"

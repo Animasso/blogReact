@@ -104,13 +104,13 @@ export const FrontPage = () => {
         <h1 className=" mt-7 text-3xl font-bold  justify-center text-center font-lobster tracking-wider">
           Welcome To My Book Note
         </h1>
-        <h2 className=" mt-6 font-lobster text-xl">
+        <h2 className=" mt-6 font-lobster flex text-center text-xl">
           Connect Read and Write note for everybody{" "}
         </h2>
       </header>
-
+      <main></main>
       <section className="">
-        <div className="h-auto">
+        <div className="h-auto mr-5">
           {/* //left conatiner */}
           <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
             <div className="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
