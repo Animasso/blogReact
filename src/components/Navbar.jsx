@@ -1,13 +1,16 @@
 import React from "react";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo192.png";
 import { signOut } from "firebase/auth";
-import { auth, provider } from "../firebase/config";
+import { auth } from "../firebase/config";
+
 export const Navbar = ({ children }) => {
   const navigate = useNavigate();
   const [nav, setNav] = useState(false);
+  const [darkmode, setDarkmode] = useState(
+    JSON.parse(localStorage.getItem("darkmode")) || false
+  );
   const [isAuth, setIsAuth] = useState(
     JSON.parse(localStorage.getItem("isAuth")) || false
   );
@@ -19,7 +22,19 @@ export const Navbar = ({ children }) => {
     localStorage.setItem("isAuth", false);
     navigate("/");
   };
-
+  const handleMode = () => {
+    const updatedMode = !darkmode;
+    setDarkmode(updatedMode);
+    localStorage.setItem("darkmode", updatedMode);
+  };
+  useEffect(() => {
+    if (darkmode) {
+      localStorage.setItem("darkmode", JSON.stringify(darkmode));
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkmode]);
   return (
     <>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -55,6 +70,18 @@ export const Navbar = ({ children }) => {
           </button>
           <div className="hidden w-full md:block md:w-auto" id="navbar-default">
             <ul className="font-medium flex flex-col md:p-2 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              <div
+                className="mt-2 relative cursor-pointer"
+                onClick={handleMode}
+              >
+                <button className="rounded-full shadow-lg shadow-gray-400  hover:bg-blue-500 hover:text-white ">
+                  <i className="bi bi-brightness-low-fill"></i>
+                </button>
+                <span className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
+                  <span className="text-black mt-9 text-xs">Dark Mode</span>
+                </span>
+              </div>
+
               <li>
                 <NavLink
                   to={"/dashboard"}

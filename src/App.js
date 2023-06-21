@@ -3,13 +3,14 @@ import { Footer, Navbar } from "./components";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Home, Register, Login, Error, CreatePost, FrontPage } from "./pages";
 import { ProtectedRoutes } from "./ProtectedRoutes";
+import { useState } from "react";
 
 function App() {
   const location = useLocation();
 
   // const isExcludedPage = location.pathname === "*";
   return (
-    <div className="App">
+    <div className="app">
       {location.pathname !== "/" && <Navbar />}
       <Routes>
         <Route path="/" element={<FrontPage />} />
