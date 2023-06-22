@@ -74,12 +74,29 @@ export const Navbar = ({ children }) => {
                 className="mt-2 relative cursor-pointer"
                 onClick={handleMode}
               >
-                <button className="rounded-full shadow-lg shadow-gray-400  hover:bg-blue-500 hover:text-white ">
-                  <i className="bi bi-brightness-low-fill"></i>
-                </button>
-                <span className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
-                  <span className="text-black mt-9 text-xs">Dark Mode</span>
-                </span>
+                {darkmode ? (
+                  <>
+                    {" "}
+                    <button className="rounded-full shadow-lg shadow-gray-400 bg-white hover:text-white ">
+                      <i className="bi bi-brightness-low"></i>
+                    </button>
+                    <span className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
+                      <span className="text-white mt-9 text-xs">
+                        Light Mode
+                      </span>
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <button className="rounded-full shadow-lg shadow-gray-400  hover:bg-blue-500 hover:text-white ">
+                      <i className="bi bi-brightness-low-fill"></i>
+                    </button>
+                    <span className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
+                      <span className="text-black mt-9 text-xs">Dark Mode</span>
+                    </span>
+                  </>
+                )}
               </div>
 
               <li>
@@ -123,22 +140,22 @@ export const Navbar = ({ children }) => {
       </nav>
       <div
         className={
-          nav ? "fixed left-0 top-0 w-full h-screen bg-black/60 z-10" : " "
+          nav ? "fixed left-0 top-0 w-full h-screen bg-black/60 z-10 " : " "
         }
       >
         <div
           className={
             nav
-              ? "fixed left-0 top-0 w-[75%] sm:w-[60%] md:w-[45%] h-screen bg-white p-10 ease-in duration-500"
-              : "fixed left-[-100%] top-0 p-10 ease-in duration-500"
+              ? "fixed dark:bg-gray-900 dark:text-white   left-0 top-0 w-[75%] sm:w-[60%] md:w-[45%] h-screen bg-white p-10 ease-in duration-500"
+              : "fixed left-[-100%] dark:bg-gray-900  dark:text-white top-0 p-10 ease-in duration-500"
           }
         >
-          <div>
+          <div className="">
             <div className="flex w-full items-center justify-between mb-10">
               <h1 className=" font-semibold text-xl"> My blog Note</h1>
               <div
                 onClick={() => setNav(!nav)}
-                className=" rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer"
+                className=" rounded-full shadow-lg shadow-gray-400 p-2 cursor-pointer"
               >
                 {" "}
                 <i className="bi bi-x-circle-fill  "></i>

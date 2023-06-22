@@ -18,19 +18,21 @@ export const Home = () => {
     getPost();
   }, [postRef, toggle]);
   return (
-    <main className=" h-auto mt-8 max-w-screen-xl flex flex-wrap  flex-col mx-auto p-4">
-      {post.map((post, index) =>
-        post ? (
-          <NoteCard
-            key={post.id}
-            post={post}
-            setToggle={setToggle}
-            toggle={toggle}
-          />
-        ) : (
-          <SkeletonCardNote key={index} />
-        )
-      )}
-    </main>
+    <div className="dark:bg-gray-900">
+      <main className="dark:bg-gray-900 dark:text-white h-auto mt-8 max-w-screen-xl flex flex-wrap  flex-col mx-auto p-4">
+        {post.map((post, index) =>
+          post ? (
+            <NoteCard
+              key={post.id}
+              post={post}
+              setToggle={setToggle}
+              toggle={toggle}
+            />
+          ) : (
+            <SkeletonCardNote key={index} />
+          )
+        )}
+      </main>
+    </div>
   );
 };

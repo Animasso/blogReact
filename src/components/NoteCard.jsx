@@ -22,7 +22,9 @@ export const NoteCard = ({ post, toggle, setToggle }) => {
       </div>
 
       <div className="mt-3 text-lg font-semibold p-1 flex justify-between">
-        <div className=" bg-slate-200 p-1 rounded ">{author.name}</div>
+        <div className=" bg-slate-200 p-1 rounded dark:text-black">
+          {author.name}
+        </div>
         {isAuth && author.id === auth.currentUser.uid && (
           <div>
             <i onClick={handleDelete} className="bi bi-trash text-red-500"></i>
