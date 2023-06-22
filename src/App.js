@@ -3,7 +3,6 @@ import { Footer, Navbar } from "./components";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Home, Register, Login, Error, CreatePost, FrontPage } from "./pages";
 import { ProtectedRoutes } from "./ProtectedRoutes";
-import { useState } from "react";
 
 function App() {
   const location = useLocation();
